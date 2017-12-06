@@ -1,6 +1,7 @@
 <!-- Load the Polymer.Element base class -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <dom-module id="my-new-view">
     <!-- Defines the element's style and local DOM -->
@@ -8,13 +9,42 @@
         <style>
             :host {
                 display: block;
-
                 padding: 16px;
+            }
+
+            paper-card.white {
+                width: 300px;
+                --paper-card-header-color: #fff;
+            }
+
+            paper-button {
+                display: inline-block;
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            paper-button.primary {
+                color: white;
+                background-color: darkorange;
+            }
+
+            paper-button.secondary {
+                color: darkorange;
+                background-color: white;
+                border: 1px solid darkorange;
             }
         </style>
 
         <h1>New view</h1>
-        <paper-checkbox>Ready to deploy!</paper-checkbox>
+        <paper-card heading="MacOS High Sierra" image="../images/macos-high-sierra.png" alt="MacOS High Sierra" class="white">
+            <div class="card-content">Some content that explain the what the image displays.</div>
+            <div class="card-actions">
+                <paper-button class="primary">primary</paper-button>
+                <paper-button class="secondary">secondary</paper-button>
+            </div>
+        </paper-card>
     </template>
     <script>
         // Your new element extends the Polymer.Element base class
