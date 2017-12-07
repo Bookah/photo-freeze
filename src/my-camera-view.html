@@ -58,9 +58,12 @@
                 <button on-click="onTakePhotoButtonClick" id="takePhotoButton" disabled>Take Photo</button>
             </div>
         </div>
+        <div id="photoArea"></div>
     </template>
     <script>
         let imageCapture;
+        let frames = [];
+        let photos= [];
 
         let drawCanvas = (canvas, img) => {
             canvas.width = getComputedStyle(canvas).width.split('px')[0];
@@ -71,6 +74,19 @@
             canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
             canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height,
                 x, y, img.width * ratio, img.height * ratio);
+        };
+
+        let createImage = (blob) => {
+            let reader = new window.FileReader();
+            let img = document.createElement('img');
+
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+                let base64data = reader.result;
+                img.src = base64data;
+            };
+
+            return img;
         };
 
         // Your new element extends the Polymer.Element base class
@@ -95,18 +111,24 @@
                     .then(imageBitmap => {
                         const canvas = this.$.grabFrameCanvas;
                         drawCanvas(canvas, imageBitmap);
+                        frames.push(imageBitmap);
                     })
                     .catch(error => console.log(error));
             }
 
             onTakePhotoButtonClick() {
                 imageCapture.takePhoto()
-                    .then(blob => createImageBitmap(blob))
-                    .then(imageBitmap => {
-                        const canvas = this.$.takePhotoCanvas;
-                        drawCanvas(canvas, imageBitmap);
-                    })
-                    .catch(error => console.log(error));
+                .then((blob) => {
+                    photos.push(blob);
+                    let img = createImage(blob);
+                    Polymer.dom(this.$.photoArea).appendChild(img);
+                    return createImageBitmap(blob);
+                })
+                .then(imageBitmap => {
+                    const canvas = this.$.takePhotoCanvas;
+                    drawCanvas(canvas, imageBitmap);
+                })
+                .catch(error => console.log(error));
             }
         }
         // Now, register your new custom element so the browser can use it
