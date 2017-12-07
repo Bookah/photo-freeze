@@ -30,28 +30,27 @@
                 background-color: darkorange;
             }
 
-            paper-button.secondary {
+            paper-button.takePhoto {
                 color: darkorange;
                 background-color: white;
                 border: 1px solid darkorange;
             }
         </style>
-
         <h1>New view</h1>
         <paper-card heading="MacOS High Sierra" image="../images/macos-high-sierra.png" alt="MacOS High Sierra" class="white">
             <div class="card-content">Some content that explain the what the image displays.</div>
             <div class="card-actions">
                 <paper-button class="primary">primary</paper-button>
-                <paper-button class="secondary">secondary</paper-button>
             </div>
         </paper-card>
+        <paper-button class="takePhoto">secondary</paper-button>
     </template>
     <script>
         // Your new element extends the Polymer.Element base class
         class MyNewView extends Polymer.Element {
             static get is() { return 'my-new-view'; }
         }
-        //Now, register your new custom element so the browser can use it
+        // Now, register your new custom element so the browser can use it
         customElements.define(MyNewView.is, MyNewView);
     </script>
 </dom-module>
