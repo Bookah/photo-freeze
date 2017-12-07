@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
-<dom-module id="my-new-view">
+<dom-module id="my-overview-view">
     <!-- Defines the element's style and local DOM -->
     <template>
         <style>
@@ -36,7 +36,7 @@
                 border: 1px solid darkorange;
             }
         </style>
-        <h1>New view</h1>
+        <h1>Overview</h1>
         <paper-card heading="MacOS High Sierra" image="../images/macos-high-sierra.png" alt="MacOS High Sierra" class="white">
             <div class="card-content">Some content that explain the what the image displays.</div>
             <div class="card-actions">
@@ -47,10 +47,10 @@
     </template>
     <script>
         // Your new element extends the Polymer.Element base class
-        class MyNewView extends Polymer.Element {
-            static get is() { return 'my-new-view'; }
+        class MyOverviewView extends Polymer.Element {
+            static get is() { return 'my-overview-view'; }
         }
         // Now, register your new custom element so the browser can use it
-        customElements.define(MyNewView.is, MyNewView);
+        customElements.define(MyOverviewView.is, MyOverviewView);
     </script>
 </dom-module>
