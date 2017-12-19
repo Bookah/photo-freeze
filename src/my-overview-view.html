@@ -1,7 +1,9 @@
 <!-- Load the Polymer.Element base class -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="./my-photo-card.html">
 
 <dom-module id="my-overview-view">
     <!-- Defines the element's style and local DOM -->
@@ -36,19 +38,81 @@
                 border: 1px solid darkorange;
             }
         </style>
+
+        <iron-ajax
+            auto
+            id="getImages"
+            url="https://us-central1-photofreeze-9f175.cloudfunctions.net/images/"
+            last-response="{{images}}"
+        ></iron-ajax>
+
+        <iron-ajax
+            id="submitAttempts"
+            method="POST"
+            content-type='application/json'
+        ></iron-ajax>
+
         <h1>Overview</h1>
-        <paper-card heading="MacOS High Sierra" image="../images/macos-high-sierra.png" alt="MacOS High Sierra" class="white">
-            <div class="card-content">Some content that explain the what the image displays.</div>
-            <div class="card-actions">
-                <paper-button class="primary">primary</paper-button>
-            </div>
-        </paper-card>
-        <paper-button class="takePhoto">secondary</paper-button>
+        <div class="flex">
+            <template is="dom-repeat" items="{{images}}" id="imageView">
+                <my-photo-card
+                    photo-id="{{item.id}}"
+                    image="{{item.img}}"
+                    attempts="[[item.attempts]]"
+                    hint="[[item.hint]]"
+                    photo-desc="[[item.description]]"
+                ></my-photo-card>
+            </template>
+        </div>
     </template>
     <script>
         // Your new element extends the Polymer.Element base class
         class MyOverviewView extends Polymer.Element {
             static get is() { return 'my-overview-view'; }
+            static get properties() {
+                return {
+                    images: Array
+                };
+            }
+            ready() {
+                super.ready();
+                this.addEventListener('photo-card-guess-submitted', this._handleGuessSubmitted);
+            }
+            _handleGuessSubmitted(event) {
+                const id = event.detail.id;
+                const guess = event.detail.guess;
+
+                const isGuessCorrect = this._checkGuess(id, guess);
+                const newAttempts = this._createAttemptsObject(isGuessCorrect);
+
+                this._submitGuess(id, newAttempts);
+                this._updateImages(id, newAttempts);
+            }
+            _checkGuess(photoId, guess) {
+                const image = this.images.find(img => img.id === photoId);
+                if (image.description === guess) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            _createAttemptsObject(isCorrect) {
+                let attempts = {correct: 0, incorrect: 0};
+                if(isCorrect) {
+                    attempts.correct = attempts.correct + 1;
+                } else {
+                    attempts.incorrect = attempts.incorrect + 1;
+                }
+                return attempts;
+            }
+            _submitGuess(photoId, attempts){
+                this.$.submitAttempts.url = 'https://us-central1-photofreeze-9f175.cloudfunctions.net/images/' + photoId + '/';
+                this.$.submitAttempts.body = {attempts};
+                this.$.submitAttempts.generateRequest();
+            }
+            _updateImages(photoId, attempts){
+                this.$.getImages.generateRequest();
+            }
         }
         // Now, register your new custom element so the browser can use it
         customElements.define(MyOverviewView.is, MyOverviewView);
