@@ -42,12 +42,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <img id="preview" src="" alt="" on-load="_cropImage">
     <img id="cropped" src="" alt="">
-    
-    <iron-ajax
-      auto
-      method="GET"
-      url="https://us-central1-photofreeze-9f175.cloudfunctions.net/images/">
-  </iron-ajax>
 
   <iron-ajax
       id="post"
@@ -111,8 +105,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
 
-        var MAX_WIDTH = 200;
-        var MAX_HEIGHT = 100;
+        var MAX_WIDTH = 800;
+        var MAX_HEIGHT = 600;
         var width = img.width;
         var height = img.height;
 
