@@ -34,10 +34,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <h1>JPG ONLY</h1>
     <input id="input" type="file" on-change="_fileChanged" accept=".jpg, .jpeg, .png">
     <paper-input label="Word to guess" value={{imageToUpload.description}}></paper-input>
     <paper-input label="Hint" value={{imageToUpload.hint}}></paper-input>
     <paper-button id="button" on-tap="_uploadFile">Upload</paper-button>
+
+    <img id="preview" src="" alt="" on-load="_cropImage">
+    <img id="cropped" src="" alt="">
     
     <iron-ajax
       auto
@@ -89,19 +93,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           alert('upload successfull');
       }
 
+      _fileChanged() {
+        let img = this.$.preview
+        let reader = new FileReader();
+        reader.readAsDataURL(this.$.input.files[0]);
+        reader.onload = event => {
+          img.src = reader.result
+        }
+
+      }
+
+      _cropImage() {
+        let img = this.$.preview
+        console.log(img.width)
+        console.log(img.height)
+        let canvas = document.createElement('canvas');
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        var MAX_WIDTH = 200;
+        var MAX_HEIGHT = 100;
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+
+        console.log('resulting dimensions:', width, height)
+        
+        var ctx = canvas.getContext("2d");
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        console.log(img.width);
+        var dataurl = canvas.toDataURL("image/jpg");
+        this.$.cropped.src = dataurl
+      }
+
       _uploadFile() {
-        let file = this.$.input.files[0];
-        if(!this.imageToUpload.description || !this.imageToUpload.hint || !file) {
+        if(!this.imageToUpload.description || !this.imageToUpload.hint || !this.$.cropped.src) {
           return
         }
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = event =>  {
-          this.imageToUpload.img = reader.result
-          this.$.post.set('body', this.imageToUpload);
-          this.$.post.generateRequest();
+        
+        this.imageToUpload.img = this.$.cropped.src
+        this.$.post.set('body', this.imageToUpload);
+        this.$.post.generateRequest();
         }
-      };
     }
 
     window.customElements.define(MyFileUpload.is, MyFileUpload);
