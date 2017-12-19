@@ -1,5 +1,6 @@
 <!-- Load the Polymer.Element base class -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 <dom-module id="my-camera-view">
     <!-- Defines the element's style and local DOM -->
@@ -43,7 +44,7 @@
             }
         </style>
 
-        <h1>Camera</h1>
+        <h1>Camera2</h1>
         <div id='results'>
             <div>
                 <video autoplay id="liveVideo"></video>
@@ -59,6 +60,8 @@
             </div>
         </div>
         <div id="photoArea"></div>
+
+        <paper-input label="test" type="file"></paper-input>
     </template>
     <script>
         let imageCapture;
