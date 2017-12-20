@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-file-upload">
@@ -32,16 +33,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: darkgray;
         color: grey;
       }
+
+      paper-input {
+        max-width: 400px;
+      }
+
+      iron-image {
+        height: 300px;
+        width: 100%;
+      }
     </style>
 
-    <h1>JPG ONLY</h1>
-    <input id="input" type="file" on-change="_fileChanged" accept=".jpg, .jpeg, .png">
+    <h1>Select a photo to upload (jpg preferably)</h1>
+    <input id="input" type="file" on-change="_setPreview" accept=".jpg, .jpeg, .png">
+
+    <br>
+    <br>
+
+    <label for="preview">Original</label>
+    <iron-image id="preview" src="" alt="" sizing="contain"></iron-image>
+
+    <label for="preview">Cropped ([[_croppedWidth]]*[[_croppedHeight]])</label>
+    <iron-image id="cropped" src="" alt="" sizing="contain"></iron-image>
+
     <paper-input label="Word to guess" value={{imageToUpload.description}}></paper-input>
     <paper-input label="Hint" value={{imageToUpload.hint}}></paper-input>
     <paper-button id="button" on-tap="_uploadFile">Upload</paper-button>
-
-    <img id="preview" src="" alt="" on-load="_cropImage">
-    <img id="cropped" src="" alt="">
 
   <iron-ajax
       id="post"
@@ -70,7 +87,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   incorrect: 0
                 }
               }
-            }
+            },
+            _croppedWidth: {
+               type: Number,
+               value: 800
+            },
+            _croppedHeight: {
+               type: Number,
+               value: 600
+            },
           }
       }
      
@@ -78,35 +103,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super.connectedCallback();
       }
 
-      _validateImageToUpload (imageToUpload) {
-        console.log('called')
-      }
+      _uploadFile() {
+        if(!this.imageToUpload.description || !this.imageToUpload.hint || !this.$.cropped.src) {
+          return
+        }
+        
+        this.imageToUpload.img = this.$.cropped.src
+        this.$.post.set('body', this.imageToUpload);
+        this.$.post.generateRequest();
+        }
 
       _handlePostResponse(event) {
           this.$.button.disabled = true;
           alert('upload successfull');
       }
 
-      _fileChanged() {
+      _setPreview() {
         let img = this.$.preview
+        let file = this.$.input.files[0]
         let reader = new FileReader();
-        reader.readAsDataURL(this.$.input.files[0]);
+        reader.readAsDataURL(file);
         reader.onload = event => {
           img.src = reader.result
         }
 
+        img.$.img.onload = () => this._cropImage();
+
       }
 
       _cropImage() {
-        let img = this.$.preview
-        console.log(img.width)
-        console.log(img.height)
+      
+        let img = this.$.preview.$.img
+        
+        //Start Ctrl v
+
         let canvas = document.createElement('canvas');
         var ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
 
-        var MAX_WIDTH = 800;
-        var MAX_HEIGHT = 600;
+        var MAX_WIDTH = this._croppedWidth;
+        var MAX_HEIGHT = this._croppedHeight;
         var width = img.width;
         var height = img.height;
 
@@ -123,26 +159,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         canvas.width = width;
         canvas.height = height;
-
-        console.log('resulting dimensions:', width, height)
         
         var ctx = canvas.getContext("2d");
         
         ctx.drawImage(img, 0, 0, width, height);
-        console.log(img.width);
         var dataurl = canvas.toDataURL("image/jpg");
-        this.$.cropped.src = dataurl
+        // End Ctrl v
+        
+        this.$.cropped.src = dataurl        
       }
 
-      _uploadFile() {
-        if(!this.imageToUpload.description || !this.imageToUpload.hint || !this.$.cropped.src) {
-          return
-        }
-        
-        this.imageToUpload.img = this.$.cropped.src
-        this.$.post.set('body', this.imageToUpload);
-        this.$.post.generateRequest();
-        }
     }
 
     window.customElements.define(MyFileUpload.is, MyFileUpload);
