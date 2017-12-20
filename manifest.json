@@ -1,7 +1,7 @@
 {
-  "name": "My App",
-  "short_name": "My App",
-  "description": "My App description",
+  "name": "Photo Freeze",
+  "short_name": "Photo Freeze",
+  "description": "The awesome Photo Freeze App",
   "icons": [
     {
       "src": "images/manifest/icon-192x192.png",
