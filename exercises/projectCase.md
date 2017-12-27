@@ -30,7 +30,8 @@ Make sure you installed all required software on your machine:
 - Create properties for the two values of the input fields. (data-binding)
 - Create a javascript function and use the property values to show an alert or validate the content.
 ### Step 2: Upload a photo
-- Find a way to upload a photo in your browser and implement this in JS function(s) (you could use input type file for example. Follow [this]???????? link for more information).
+- Find a way to upload a photo in your browser and implement this in JS function(s) (you could use input type="file" for example, docs [here] (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file).
+- You can use iron-image to display a preview.
 - Make sure the image/photo format is a base64 string.
 ### Step 3: Save the data in a database
 - Implement iron-ajax to send a json file to POST one image (see the swagger file for more information).
