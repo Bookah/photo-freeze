@@ -127,6 +127,17 @@ arr2.sort((a, b) => a - b)
 
 console.log(arr2)
 
+var sayDelayedHello = function () {
+    setTimeout(function() {
+        console.log('Hello');
+    },1000)
+}
+
+let sayDelayedHello2 = () => setTimeout(
+        () => console.log('Hello2'),
+        1000
+    )
+
 // Objects (shorthand property initializer, concise methods, computed property names, Object.assign (not a deep copy))
 
 var name = 'Pete'
