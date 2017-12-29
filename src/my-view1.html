@@ -32,6 +32,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     class MyView1 extends Polymer.Element {
       static get is() { return 'my-view1'; }
+      connectedCallback() {
+          super.connectedCallback();
+          this.addEventListener('photo-card-guess-submitted', (event) => console.log(event));
+      }
     }
 
     window.customElements.define(MyView1.is, MyView1);
