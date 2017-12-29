@@ -22,7 +22,8 @@ Make sure you installed all required software on your machine:
 - Get all dependencies: `bower i`
 - Add a folder in src with your name. You will create your components in this folder.
 - Make sure that the project runs by running `polymer serve --open` in the command line.
-- Create a new page with your own name in the app: [instructions](https://www.polymer-project.org/2.0/start/toolbox/create-a-page). (Note: create the page in your own folder instead of src.)
+- Create a new page with your own name in the app: [instructions](https://www.polymer-project.org/2.0/start/toolbox/create-a-page).
+(Note: create the page in your own folder instead of src.)
 
 ## Hands on: upload page
 ### Step 1: Create text input fields
@@ -30,7 +31,8 @@ Make sure you installed all required software on your machine:
 - Create properties for the two values of the input fields. (data-binding)
 - Create a javascript function and use the property values to show an alert or validate the content.
 ### Step 2: Upload a photo
-- Find a way to upload a photo in your browser and implement this in JS function(s) (you could use input type="file" for example, docs [here] (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file).
+- Find a way to upload a photo in your browser and implement this in JS function(s)
+(you could use input type="file" for example, docs [here] (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file).
 - You can use iron-image to display a preview.
 - Make sure the image/photo format is a base64 string.
 ### Step 3: Save the data in a database
@@ -38,7 +40,8 @@ Make sure you installed all required software on your machine:
 - Create a button (e.g. paper-button) to save the file to the database.
 - Use the *on-tap* property to initiate the JS function to make the HTTP request using iron-ajax and save the photo.
 ### Step 4: Build your page in the existing application
-- Create a new (team) page and link in the application. Click [here](https://www.polymer-project.org/2.0/start/toolbox/create-a-page) for more information.
+- Create a new (team) page and link in the application. Click [here](https://www.polymer-project.org/2.0/start/toolbox/create-a-page)
+ for more information.
 - Integrate your individual efforts into one overview component and put it in the team page.
 
 ## Hands on: Overview page

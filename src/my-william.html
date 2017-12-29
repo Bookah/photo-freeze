@@ -11,6 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="William/william-upload.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
 
 <dom-module id="my-william-view">
     <template>
@@ -20,16 +22,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 padding: 10px;
             }
+            paper-input {
+                max-width: 400px;
+                margin: auto;
+            }
         </style>
+
 <william-upload>
 
 </william-upload>
+        <form method="post">
+            <div>
+                <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+                <input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png" multiple required>
+            </div>
+            <paper-input label="Descriptive word" value="{{descriptive}}" on-change="validate"></paper-input>
+            <paper-input label="Hint" value="{{hint}}" on-change="validate" required></paper-input>
+            <input type="submit" id="submit" disabled></input>
+        </form>
 
     </template>
 
     <script>
         class MyWilliamView extends Polymer.Element {
             static get is() { return 'my-william-view'; }
+
+            validate (){
+                if(this.descriptive && this.hint) {
+                    console.log('Check');
+                    this.$.submit.disabled = false;
+                }
+            }
+
         }
 
         window.customElements.define(MyWilliamView.is, MyWilliamView);
