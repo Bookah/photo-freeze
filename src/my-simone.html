@@ -1,0 +1,30 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="simone/my-upload.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-simone">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <div class="circle">4</div>
+      <h1>Upload</h1>
+      <my-upload></my-upload>
+    </div>
+  </template>
+
+  <script>
+    class MySimone extends Polymer.Element {
+      static get is() { return 'my-simone'; }
+
+    }
+
+    window.customElements.define(MySimone.is, MySimone);
+  </script>
+</dom-module>

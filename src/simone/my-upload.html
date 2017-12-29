@@ -1,0 +1,103 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="my-upload">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+
+      #preview {
+        width: 100px;
+        height: 100px;
+      }
+    </style>
+
+    <iron-image id="preview" src="[[base64]]" sizing="contain"></iron-image>
+    <input id="photo" type="file" on-change="showPhoto" disabled="{{waiting}}" required></input>
+
+    <paper-input id="description" label="Description" value="{{description}}" error-message="Invalid input!" disabled="{{waiting}}" required auto-validate></paper-input>
+    <paper-input id="hint" label="Hint" value="{{hint}}" error-message="Invalid input!" disabled="{{waiting}}" required auto-validate></paper-input>
+
+    <paper-button on-click="save" disabled="{{waiting}}" raised>Save</paper-button>
+
+    <template is="dom-if" if="{{saveSuccess}}">
+      <p>Saved!</p>
+    </template>
+    <template is="dom-if" if="{{saveError}}">
+      <p>Sorry, failed.</p>
+    </template>
+
+    <iron-ajax id="postImage"
+      content-type="application/json"
+      handle-as="json"
+      on-response="ajaxSuccess"
+      on-error="ajaxError">
+    </iron-ajax>
+  </template>
+
+  <script>
+    class MyUpload extends Polymer.Element {
+      static get is() { return 'my-upload'; }
+
+      showPhoto() {
+        const reader = new FileReader();
+        const file = this.$.photo.files[0];
+        reader.readAsDataURL(file);
+        reader.onload = (event => this.base64 = event.target.result);
+      }
+
+      save() {
+        if(this.isValid()){
+          this.waiting = true;
+          postImage()
+        }
+      }
+
+      isValid() {
+        this.$.description.validate();
+        this.$.hint.validate();
+        return false
+      }
+
+      postImage() {
+        const request = this.$.postImage;
+        request.url   = 'http://us-central1-photofreeze-9f175.cloudfunctions.net/images/';
+        request.method= 'POST';
+        request.body  = {
+          img: this.base64,
+          description: this.description,
+          hint: this.hint,
+          attempts: {
+            correct: 0,
+            incorrect: 0
+          }
+        }
+
+        request.generateRequest();
+      }
+
+      ajaxSuccess(response) {
+        this.saveSuccess = true;
+        this.waiting = false;
+        this.base64 = undefined;
+        this.description = undefined;
+        this.hint = undefined;
+
+        setTimeout(() => {this.saveSuccess = false}, 3000);
+      }
+
+      ajaxError(error) {
+        this.saveError = true;
+        this.waiting = false;
+      }
+    }
+
+    window.customElements.define(MyUpload.is, MyUpload);
+  </script>
+</dom-module>
