@@ -1,0 +1,111 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="William/william-upload.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="my-william-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+            paper-input {
+                max-width: 400px;
+                margin: auto;
+            }
+        </style>
+
+<william-upload>
+
+</william-upload>
+        <form>
+            <div>
+                <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+                <input type="file" id="image_uploads" name="image_uploads" value="{{image}}" accept=".jpg, .jpeg, .png" required on-change="convert">
+            </div>
+            <paper-input label="Descriptive word" value="{{descriptive}}" on-change="validate"></paper-input>
+            <paper-input label="Hint" value="{{hint}}" on-change="validate" required></paper-input>
+            <button type="button" id="submit" disabled on-click="sendImage">submit</button>
+            <iron-ajax id="ironAjax"
+                       method="post"
+                       content-type="application/json"
+                       url="http://us-central1-photofreeze-9f175.cloudfunctions.net/images/"
+                       handle-as="json"
+                       on-response="handleResponse"
+                       debounce-duration="300">
+            </iron-ajax>
+            <img src="{{preview}}" height="200" alt="Image preview...">
+        </form>
+
+    </template>
+
+    <script>
+        class MyWilliamView extends Polymer.Element {
+            static get is() { return 'my-william-view'; }
+
+            static get Properties(){
+                return {
+                    convertedImage: {
+                        type: String,
+                        value: 'example'
+                    },
+                    preview: {
+                        type: String,
+                        value: ''
+                    },
+                    sourc: {
+                        type: String,
+                        value: ''
+                    }
+                }
+            }
+
+            validate (){
+                if(this.descriptive && this.hint) {
+                    this.$.submit.disabled = false;
+                }
+            }
+
+            convert() {
+                const reader = new FileReader();
+                reader.readAsDataURL(this.$.image_uploads.files[0]);
+                reader.onload = (result) => {
+                    this.set('preview', result.target.result);
+                };
+
+                this.preview = document.querySelector('img');
+                this.sourc = this.$.image_uploads.files[0];
+                this.set('preview', this.image);
+
+            }
+
+            sendImage() {
+                this.$.ironAjax.body = {
+                    img: this.preview,
+                    description: this.descriptive,
+                    hint: this.hint,
+                    attempts: {
+                        correct: 0,
+                        incorrect: 0
+                    }
+                }
+                this.$.ironAjax.generateRequest();
+            }
+        }
+
+        window.customElements.define(MyWilliamView.is, MyWilliamView);
+    </script>
+</dom-module>
