@@ -23,15 +23,13 @@
 
     <paper-input id="description" label="Description" value="{{description}}" error-message="Invalid input!" disabled="{{waiting}}" required auto-validate></paper-input>
     <paper-input id="hint" label="Hint" value="{{hint}}" error-message="Invalid input!" disabled="{{waiting}}" required auto-validate></paper-input>
+    
+    <template is="dom-if" if="{{saveSuccess}}">Saved!</template>
+    <template is="dom-if" if="{{saveError}}">Sorry, failed.</template>
+
+    <br>
 
     <paper-button on-click="save" disabled="{{waiting}}" raised>Save</paper-button>
-
-    <template is="dom-if" if="{{saveSuccess}}">
-      <p>Saved!</p>
-    </template>
-    <template is="dom-if" if="{{saveError}}">
-      <p>Sorry, failed.</p>
-    </template>
 
     <iron-ajax id="postImage"
       content-type="application/json"
@@ -55,14 +53,12 @@
       save() {
         if(this.isValid()){
           this.waiting = true;
-          postImage()
+          this.postImage();
         }
       }
 
       isValid() {
-        this.$.description.validate();
-        this.$.hint.validate();
-        return false
+        return this.$.description.validate() || this.$.description.validate();
       }
 
       postImage() {
