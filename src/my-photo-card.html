@@ -1,0 +1,63 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-photo-card">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+        </style>
+
+        <paper-card image="[[image.img]]">
+            <div class="card-content">
+                <div>Correct guesses: {{image.attempts.correct}}</div>
+                <div>Incorrect guesses: {{image.attempts.incorrect}}</div>
+            </div>
+            <div class="card-actions">
+                <iron-icon icon="info-outline" on-click="_clickHint">show hint</iron-icon>
+                <template is="dom-if" if="{{showHint}}">[[image.hint]]</template>
+                <div class="layout horizontal ">
+                    <paper-input required auto-validate invalid="{{blaat}}" value="{{guess}}" class="flex"></paper-input>
+                    <paper-button raised style="background-color:grey" disabled="{{blaat}}" on-click="_submit">Submit</paper-button>
+                </div>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        class MyPhotoCard extends Polymer.Element {
+            static get is() { return 'my-photo-card'; }
+
+            static get properties() {
+                return {
+                    image: Object,
+                    guess: String,
+                    showHint: {value:false},
+                    blaat: {value:true}
+                };
+            }
+
+            _clickHint() {
+                this.set('showHint', !this.showHint);
+            }
+
+            _submit(event) {
+                this.dispatchEvent(new CustomEvent('photo-card-guess-submitted', {bubbles: true, composed: true, detail: {id: this.image.id, guess: this.guess}}));
+                this.set('guess', '');
+                this.set('blaat', true);
+            }
+        }
+
+        window.customElements.define(MyPhotoCard.is, MyPhotoCard);
+    </script>
+</dom-module>
