@@ -31,14 +31,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <william-upload>
 
 </william-upload>
-        <form method="post">
+        < method="post">
             <div>
                 <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
-                <input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png" multiple required>
+                <input type="file" id="image_uploads" name="image_uploads" value="{{image}}" accept=".jpg, .jpeg, .png" required on-change="convert">
             </div>
             <paper-input label="Descriptive word" value="{{descriptive}}" on-change="validate"></paper-input>
             <paper-input label="Hint" value="{{hint}}" on-change="validate" required></paper-input>
             <input type="submit" id="submit" disabled></input>
+            <img src="{{preview}}" height="200" alt="Image preview...">
         </form>
 
     </template>
@@ -47,6 +48,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         class MyWilliamView extends Polymer.Element {
             static get is() { return 'my-william-view'; }
 
+            static get Properties(){
+                return {
+                    convertedImage:
+                        {
+                            type: String,
+                            value: 'example'
+                        },
+                    preview: {
+                        type: String,
+                        value: ''
+                    },
+                    sourc: {
+                        type: String,
+                        value: ''
+                    }
+                }
+            }
             validate (){
                 if(this.descriptive && this.hint) {
                     console.log('Check');
@@ -54,6 +72,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
 
+            convert() {
+                const reader = new FileReader();
+                reader.readAsDataURL(this.$.image_uploads.files[0]);
+                reader.onload = function(result) {
+                    this.set('preview', result.target.result);
+                }.bind(this);
+
+                this.preview = document.querySelector('img');
+                this.sourc = this.$.image_uploads.files[0];
+                this.set('preview', this.image);
+
+            }
         }
 
         window.customElements.define(MyWilliamView.is, MyWilliamView);
