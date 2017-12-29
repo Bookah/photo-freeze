@@ -44,7 +44,7 @@ Make sure you installed all required software on your machine:
 ## Hands on: Overview page
 This page will display the element that the Photo Card team creates. Your contract is the following.
 - Name of the custom element: my-photo-card
-- Attribute for the photo id: photo-id
+- Attribute for the photo id: id
 - Attribute for the image: image
 - Attribute for the attempts: attempts
 - Attribute for the hint: hint
