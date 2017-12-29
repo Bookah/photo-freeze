@@ -1,0 +1,89 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="my-photo-card.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-overview-page">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+            my-photo-card {
+                width: 40%
+            }
+        </style>
+
+        <iron-ajax
+                auto
+                id="getImages"
+                url="http://us-central1-photofreeze-9f175.cloudfunctions.net/images/"
+                handle-as="json"
+                on-response="handleResponse"
+                debounce-duration="300"></iron-ajax>
+
+        <iron-ajax
+                id="postAttempt"
+                method="POST"
+                content-type='application/json'></iron-ajax>
+
+        <h1>Overview</h1>
+        <div class="layout horizontal wrap">
+            <template is="dom-repeat" items="{{images}}" id="imageView">
+                <my-photo-card image="{{item}}"></my-photo-card>
+            </template>
+        </div>
+    </template>
+
+    <script>
+        class MyOverviewPage extends Polymer.Element {
+            static get is() { return 'my-overview-page'; }
+
+            static get properties() {
+                return {
+                    images: Array
+                };
+            }
+            ready() {
+                super.ready();
+                this.addEventListener('photo-card-guess-submitted', this.handleGuess);
+            }
+
+            handleGuess(event) {
+                const id = event.detail.id;
+                const guess = event.detail.guess;
+                const index = this.images.findIndex(img => img.id === id);
+
+                const attempt = {correct:0,incorrect:0}
+                if(this.images[index].description === guess) {
+                    console.log('correct');
+                    attempt.correct = 1;
+                    this.set('images.'+index+'.attempts.correct', this.images[index].attempts.correct+1);
+                } else {
+                    console.log('incorrect');
+                    attempt.incorrect = 1;
+                   this.set('images.'+index+'.attempts.incorrect', this.images[index].attempts.incorrect+1);
+                }
+
+                this.$.postAttempt.url = 'https://us-central1-photofreeze-9f175.cloudfunctions.net/images/' + this.images[index].id + '/';
+                this.$.postAttempt.body = {attempts: this.images[index].attempts};
+                this.$.postAttempt.generateRequest();
+            }
+
+            validateGuess(id, guess) {
+                const image = this.images.find(img => img.id === id);
+                return (image.description === guess);
+            }
+
+            handleResponse(data) {
+                this.images = data.detail.response;
+            }
+        }
+
+        window.customElements.define(MyOverviewPage.is, MyOverviewPage);
+    </script>
+</dom-module>
