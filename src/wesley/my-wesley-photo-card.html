@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="my-wesley-photo-card">
+    <template>
+        <style>
+            .correct {
+                width: 40px;
+                height: 40px;
+                display: inline-block;
+                background-color: green;
+                border-radius: 50%;
+                text-align: center;
+                color: #FFF;
+            }
+
+            .incorrect {
+                width: 40px;
+                height: 40px;
+                display: inline-block;
+                background-color: red;
+                border-radius: 50%;
+                text-align: center;
+                color: #FFF;
+            }
+        </style>
+
+        <paper-card image="[[image]]">
+            <div class="card-content">
+                <p>Attempts</p>
+                <div class="correct">[[attempts.correct]]</div>
+                <div class="incorrect">[[attempts.incorrect]]</div>
+                <template is="dom-if" if="{{showHint}}">{{hint}}</template>
+            </div>
+            <div class="card-actions">
+                <paper-input always-float-label label="What's your guess?" value="{{guess}}"></paper-input>
+                <paper-button raised on-tap="toggleHint">show hint</paper-button>
+                <paper-button raised on-tap="submitGuess">submit</paper-button>
+            </div>
+        </paper-card>
+    </template>
+    <script>
+        class MyWesleyPhotoCard extends Polymer.Element {
+            static get is() { return 'my-wesley-photo-card'; }
+            static get properties() {
+                return {
+                    image: String,
+                    guess: String,
+                    attempts: {
+                        value: {
+                            correct: 0,
+                            incorrect: 0,
+                        },
+                    },
+                    hint: String,
+                    photoid: String,
+                    _showHint: Boolean
+                };
+            }
+
+            toggleHint() {
+                this.set('showHint', !this.showHint);
+            }
+
+            submitGuess(e) {
+                this.dispatchEvent(new CustomEvent('photo-card-guess-submitted',
+                    {
+                        detail: {
+                            id: this.photoid,
+                            guess: this.guess
+                        },
+                        bubbles: true,
+                        composed: true
+                    }
+                ));
+            }
+        }
+        customElements.define(MyWesleyPhotoCard.is, MyWesleyPhotoCard);
+    </script>
+</dom-module>
