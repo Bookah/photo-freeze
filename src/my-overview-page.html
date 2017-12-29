@@ -3,7 +3,8 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="my-photo-card.html">
+<!--<link rel="import" href="my-photo-card.html">-->
+<link rel="import" href="wesley/my-wesley-photo-card.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-overview-page">
@@ -34,7 +35,13 @@
         <h1>Overview</h1>
         <div class="layout horizontal wrap">
             <template is="dom-repeat" items="{{images}}" id="imageView">
-                <my-photo-card image="{{item}}"></my-photo-card>
+                <!--<my-photo-card image="{{item}}"></my-photo-card>-->
+                <my-wesley-photo-card
+                    image="{{item.img}}"
+                    hint="{{item.hint}}"
+                    attempts="{{item.attempts}}"
+                    photoid="{{item.id}}">
+                </my-wesley-photo-card>
             </template>
         </div>
     </template>
