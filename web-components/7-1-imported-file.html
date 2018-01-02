@@ -1,0 +1,29 @@
+<template>
+    <div>
+        <h3>Header shadow DOM</h3>
+        <textarea></textarea>
+        <br/>
+        <input type="submit">
+        <slot name="choice"></slot>
+        <slot></slot>
+        <button id="shadow-dom-button">Shadow DOM button</button>
+    </div>
+</template>
+
+<script>
+    // Javascript runs immediately when imported, in the context of the file where it is imported.
+    // To reference the document of the web component instead of the context file we use currentScript.ownerDocument.
+    const importDoc = document.currentScript.ownerDocument;
+
+    class UserComment extends HTMLElement {
+        constructor() {
+            super();
+            // document.querySelector('template') would run in the context
+            const template = importDoc.querySelector('template');
+            const templateClone = document.importNode(template.content, true);
+            const root = this.attachShadow({mode: 'open'});
+            root.appendChild(templateClone);
+        }
+    }
+    customElements.define("user-comment", UserComment);
+</script>

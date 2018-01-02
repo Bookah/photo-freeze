@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<user-comment></user-comment>
+
+<script>
+    // INSTANTIATE NEW CUSTOM ELEMENT
+
+    // When the browser sees the <user-comment> tag, it constructs and renders a new instance of the AutonomousButton class.
+    class UserComment extends HTMLElement {
+        // Custom element reaction: constructor. Manipulate the element upon creation.
+        constructor() {
+            super();
+            this.innerHTML = '<h3>User Comment</h3><textarea></textarea></br><input type="submit">';
+        }
+    }
+    customElements.define("user-comment", UserComment);
+
+
+    // EXTEND EXISTING HTML ELEMENT
+    class CustomizedButton extends HTMLButtonElement {
+    }
+    customElements.define("customized-button", CustomizedButton, { extends: "button" });
+</script>
+</body>
+</html>

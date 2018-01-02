@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<h3>Header in the body</h3>
+
+<!-- Everything inside gets rendered until the template gets cloned -->
+<template>
+    <h3>Header in the template</h3>
+    <textarea></textarea>
+    <br/>
+    <input type="submit">
+
+    <img src="bad/path.jpg" />
+    <script>
+        console.log('This will not log until cloned');
+    </script>
+</template>
+
+<script>
+    // 1. Get reference to the template
+    const template = document.querySelector('template');
+
+    // 2. Clone content of the template --> document.importNode. true = deep copy
+    const templateClone = document.importNode(template.content, true);
+
+    // 3. Append the clone to the body of the page
+    document.body.appendChild(templateClone);
+</script>
+</body>
+</html>

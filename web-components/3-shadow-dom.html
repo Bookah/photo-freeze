@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /*  Does not affect shadow DOM */
+        h3 {
+            color: mediumaquamarine;
+        }
+    </style>
+</head>
+<body>
+<h3>Header in light DOM</h3>
+<div id="host"></div>
+
+<template>
+    <div>
+        <h3>Header in shadow DOM</h3>
+    </div>
+</template>
+
+<script>
+    // 1. Select shadow host
+    const host = document.getElementById('host');
+    // 2. Create shadow root => open = accessible through element.shadowRoot. (closed should be avoided, <video>)
+    const root = host.attachShadow({mode: 'open'});
+    // 3. Get reference to the template
+    const template = document.querySelector('template');
+    // 4. Add template to shadow root.
+    root.appendChild(document.importNode(template.content, true));
+
+    // *BONUS*
+    // Only gets the h1 from the light DOM. Standard Selectors do not see the shadow DOM because its in a separate subtree.
+    console.log(document.querySelector('h3'));
+    // Shadow DOM methods similar normal DOM methods
+    console.log(root.querySelector('h3'));
+</script>
+</body>
+</html>

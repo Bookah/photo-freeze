@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Retargeting</title>
+</head>
+<body>
+<h3>Header in light DOM</h3>
+<!-- Add button to Light DOM -->
+<button id="light-dom-button">light DOM buttton</button>
+
+<div id="host">
+    <p>Distributed paragraph</p>
+    <select slot="choice">
+        <option>A</option>
+        <option>B</option>
+    </select>
+    <!-- Add distributed button -->
+    <button id="distributed-button">distributed buttton</button>
+</div>
+
+<template>
+    <div>
+        <h3>Header shadow DOM</h3>
+        <textarea></textarea>
+        <br/>
+        <input type="submit">
+        <slot name="choice"></slot>
+        <slot></slot>
+        <!--  Add button in shadow DOM -->
+        <button id="shadow-dom-button">Shadow DOM button</button>
+    </div>
+</template>
+
+
+<script>
+    const host = document.getElementById('host');
+    const root = host.attachShadow({mode: 'open'});
+    const template = document.querySelector('template');
+    root.appendChild(document.importNode(template.content, true));
+
+    // The click will be retarget so that it appears it comes from the host. 'host is clicked!'
+    document.addEventListener('click', (event) => console.log(event.target.id + ' clicked!'));
+</script>
+</body>
+</html>

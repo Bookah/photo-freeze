@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        #host {
+            margin-bottom: 32px;
+            --fancy-tabs-bg: cornflowerblue;
+        }
+    </style>
+</head>
+<!-- Add class -->
+<body class="dracula">
+<h3>Header in light DOM</h3>
+<button id="light-dom-button">light DOM buttton</button>
+
+<!-- Add attribute -->
+<div id="host" background>
+    <p>Distributed paragraph</p>
+    <select slot="choice">
+        <option>A</option>
+        <option>B</option>
+    </select>
+    <button id="distributed-button">distributed buttton</button>
+</div>
+
+<template>
+    <style>
+        /* Style distributed nodes */
+        ::slotted(p) {
+            color: red;
+        }
+
+        /* Style the host + Allow style from outside */
+        :host([background]) {
+            background: var(--fancy-tabs-bg, #9E9E9E);
+            border: 2px solid blue;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        /*
+           :host only looks at the shadow host. :host-context will go through the shadow boundary all the way up to document
+           root if necessary. (only ancestors, no siblings)
+       */
+        :host-context(.dracula) {
+            border: solid 2px black;
+            background-color: grey;
+        }
+    </style>
+    <div>
+        <h3>Header shadow DOM</h3>
+        <textarea></textarea>
+        <br/>
+        <input type="submit">
+        <slot name="choice"></slot>
+        <slot></slot>
+        <button id="shadow-dom-button">Shadow DOM button</button>
+    </div>
+</template>
+
+<script>
+    const host = document.getElementById('host');
+    const root = host.attachShadow({mode: 'open'});
+    const template = document.querySelector('template');
+    root.appendChild(document.importNode(template.content, true));
+</script>
+</body>
+</html>

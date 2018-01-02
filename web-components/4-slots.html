@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /*  Does not affect shadow DOM */
+        h3 {
+            color: aquamarine;
+        }
+    </style>
+</head>
+<body>
+<h3>Header in light DOM</h3>
+<!-- Define content in the light DOM and display it somewhere in the shadow DOM -->
+<div id="host">
+    <p>Distributed paragraph</p>
+    <select slot="choice">
+        <option>A</option>
+        <option>B</option>
+    </select>
+</div>
+
+<template>
+    <div>
+        <h3>Header shadow DOM</h3>
+        <textarea></textarea>
+        <br/>
+        <input type="submit">
+        <!-- add slots over here -->
+        <slot name="choice"></slot>
+        <slot></slot>
+    </div>
+</template>
+
+<script>
+    const host = document.getElementById('host');
+    const root = host.attachShadow({mode: 'open'});
+    const template = document.querySelector('template');
+    root.appendChild(document.importNode(template.content, true));
+</script>
+</body>
+</html>
